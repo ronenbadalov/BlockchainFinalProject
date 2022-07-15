@@ -3,18 +3,18 @@ import Land from "./Land";
 import classes from "./Map.module.scss";
 import { Row, Col } from "react-bootstrap";
 import MUIModal from "../Modal/MUIModal";
-import LandModalInfo from "../LandModalInfo/LandModalInfo";
+import LandModalInfo from "../LandModalInfo/LandModalInfo.js";
 
-const getMap = async () => {
-  try {
-    const res = await fetch("http://127.0.0.1:5000/land/getAll");
-    if (!res.ok) throw new Error("error while fetching map");
-    const data = await res.json();
-    return data;
-  } catch (e) {
-    console.error(e.message);
-  }
-};
+// const getMap = async () => {
+//   try {
+//     const res = await fetch("http://127.0.0.1:5000/land/getAll");
+//     if (!res.ok) throw new Error("error while fetching map");
+//     const data = await res.json();
+//     return data;
+//   } catch (e) {
+//     console.error(e.message);
+//   }
+// };
 
 const Map = () => {
   const [mapData, setMapData] = useState([]);
@@ -30,18 +30,19 @@ const Map = () => {
   }, []);
 
   useEffect(() => {
-    if (!sessionStorage.getItem("map")) {
-      (async () => {
-        const arr = await getMap();
-        const sortedArr = arr.sort((a, b) => +a.id - +b.id);
-        const newArr = [];
-        while (sortedArr.length) newArr.push(sortedArr.splice(0, 100));
-        setMapData(newArr);
-        sessionStorage.setItem("map", JSON.stringify(newArr));
-      })();
-    } else {
-      setMapData(JSON.parse(sessionStorage.getItem("map")));
-    }
+    setMapData([
+      [
+        {
+          disabled: false,
+          forSale: true,
+          id: 1,
+          isOccupied: undefined,
+          owner: "",
+          price: 15,
+          type: "land",
+        },
+      ],
+    ]);
   }, []);
 
   const MapComp = useCallback(() => {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Legend from "./components/Legend/Legend";
 import Loader from "./components/Loader/Loader";
 import Map from "./components/UI/Map";
+import "./App.scss";
 
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
