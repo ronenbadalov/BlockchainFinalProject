@@ -1,20 +1,15 @@
-import React, { memo, useEffect, useState, useContext } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import CurUserContext from "../../store/curUser-context";
 
 const Land = (props) => {
   const [classColor, setClassColor] = useState("");
-  // const curUserCtx = useContext(CurUserContext);
-  // const currentUser = curUserCtx.user;
 
   const currentUser = {};
   useEffect(() => {
     switch (props.type) {
       case "land":
         if (props.isOcupied) {
-          // console.log(props.owner);
-          // console.log(currentUser);
           if (props.owner === currentUser.id) {
             if (props.forSale) setClassColor("orange");
             else setClassColor("yellow");

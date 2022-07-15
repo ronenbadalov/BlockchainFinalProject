@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Legend from "./components/Legend/Legend";
 import Loader from "./components/Loader/Loader";
 import Map from "./components/UI/Map";
+import Nav from "./components/layout/Nav.js";
 import "./App.scss";
 
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
@@ -18,13 +19,16 @@ function App() {
   }, []);
   return (
     <div className="App">
-      {isLoading && <Loader />}
+      <Nav />
+      <div className="home">
+        {isLoading && <Loader />}
 
-      {!isLoading && (
-        <>
-          <Legend /> <Map />
-        </>
-      )}
+        {!isLoading && (
+          <>
+            <Legend /> <Map />
+          </>
+        )}
+      </div>
     </div>
   );
 }

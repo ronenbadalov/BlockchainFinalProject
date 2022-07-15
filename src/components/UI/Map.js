@@ -4,7 +4,7 @@ import classes from "./Map.module.scss";
 import { Row, Col } from "react-bootstrap";
 import MUIModal from "../Modal/MUIModal";
 import LandModalInfo from "../LandModalInfo/LandModalInfo.js";
-
+import mapDataJson from "../../mapData.json";
 // const getMap = async () => {
 //   try {
 //     const res = await fetch("http://127.0.0.1:5000/land/getAll");
@@ -17,6 +17,7 @@ import LandModalInfo from "../LandModalInfo/LandModalInfo.js";
 // };
 
 const Map = () => {
+  console.log(mapDataJson);
   const [mapData, setMapData] = useState([]);
   const [landModalData, setLandModalData] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -30,19 +31,7 @@ const Map = () => {
   }, []);
 
   useEffect(() => {
-    setMapData([
-      [
-        {
-          disabled: false,
-          forSale: true,
-          id: 1,
-          isOccupied: undefined,
-          owner: "",
-          price: 15,
-          type: "land",
-        },
-      ],
-    ]);
+    setMapData(mapDataJson);
   }, []);
 
   const MapComp = useCallback(() => {
