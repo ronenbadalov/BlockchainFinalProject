@@ -11,16 +11,10 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
-// import { updateLand } from "../../helpers/landHelper";
-// import CurUserContext from "../../store/curUser-context";
+import React, { useState } from "react";
 import classes from "./LandModalInfo.module.scss";
 const LandModalInfo = ({ landData, onClose }) => {
-  // const curUserCtx = useContext(CurUserContext);
-  const [isMyLand, setIsMyLand] = useState(
-    // curUserCtx.user.id === landData.owner
-    false
-  );
+  const [isMyLand, setIsMyLand] = useState(false);
   const sxClasses = {
     marginRight: "auto",
     maxWidth: "200px",
@@ -28,14 +22,6 @@ const LandModalInfo = ({ landData, onClose }) => {
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
-    // if (curUserCtx.user.balance < landData.price) {
-    //   alert("You don't have enough money to buy this land");
-    //   return;
-    // }
-    // const res = await updateLand(landData.id, {
-    //   isOcupied: curUserCtx.user.id,
-    // });
-    // console.log(res);
   };
   return (
     <div>
@@ -56,9 +42,8 @@ const LandModalInfo = ({ landData, onClose }) => {
               <Input
                 id="landPrice"
                 value={landData.price}
-                // onChange={handleChange('amount')}
-                startAdornment={
-                  <InputAdornment position="start">$</InputAdornment>
+                endAdornment={
+                  <InputAdornment position="end">ETH</InputAdornment>
                 }
                 disabled={!isMyLand}
                 label="Price"

@@ -17,7 +17,6 @@ import mapDataJson from "../../mapData.json";
 // };
 
 const Map = () => {
-  console.log(mapDataJson);
   const [mapData, setMapData] = useState([]);
   const [landModalData, setLandModalData] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -62,7 +61,7 @@ const Map = () => {
         })}
       </div>
     );
-  }, [mapData]);
+  }, [mapData, handleModalOpen]);
 
   return (
     <>

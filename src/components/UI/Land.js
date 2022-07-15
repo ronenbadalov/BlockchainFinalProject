@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -27,8 +27,10 @@ const Land = (props) => {
       case "park_land":
         setClassColor("green");
         break;
+      default:
+        setClassColor(null);
     }
-  }, []);
+  }, [currentUser.id, props.owner, props.isOcupied, props.type, props.forSale]);
 
   const showLandDataInModal = () => {
     props.setLandModalData({
