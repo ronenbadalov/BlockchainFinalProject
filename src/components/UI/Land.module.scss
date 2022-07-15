@@ -1,0 +1,31 @@
+.land {
+  width: 40px;
+  height: 40px;
+  margin: 0.2rem;
+  border-radius: 5px;
+}
+// types: unowned, owned ,owned-forSale, road, park
+.unowned {
+  background-color: gray;
+}
+.owned {
+  background-color: red;
+}
+.unowned-forSale {
+  background-color: #3a86ff;
+}
+.park {
+  background-color: green;
+}
+
+.road {
+  background-color: black;
+}
+
+.unClickable {
+  cursor: not-allowed;
+}
+
+.clickable {
+  cursor: pointer;
+}

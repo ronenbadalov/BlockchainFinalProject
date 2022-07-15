@@ -1,6 +1,7 @@
-import logo from "./logo.svg";
-import { useEffect, useState } from "react";
-import "./App.css";
+import React, { useEffect, useState } from "react";
+import Legend from "./components/Legend/Legend";
+import Loader from "./components/Loader/Loader";
+import Map from "./components/UI/Map";
 
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 

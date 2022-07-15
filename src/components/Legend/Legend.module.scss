@@ -1,0 +1,18 @@
+.legend {
+  width: 201px;
+  background-color: white;
+  margin-top: 8px;
+  .row {
+    display: flex;
+    font-style: italic;
+    .boxColor {
+      min-width: 30px;
+      height: 30px;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+  }
+  .landItem {
+    padding: 5px 0;
+  }
+}
