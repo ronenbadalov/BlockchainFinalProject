@@ -39,16 +39,30 @@ function App() {
       );
 
       const ownersOfLands = await instance.methods.getOwners().call();
+      window.ethereum.on('accountsChanged', function (accounts) {
+        setBlockchainWeb3({
+          web3: web3,
+          contract: instance,
+          owners: ownersOfLands,
+          accounts,
+        });
+      });
+
       setBlockchainWeb3({
         web3,
         accounts,
         contract: instance,
         owners: ownersOfLands,
       });
-
       setIsLoading(false);
     })();
   }, []);
+
+  // useEffect(() => {
+  //   if (blockchainWeb3.accounts && blockchainWeb3.contract) setIsLoading(false);
+  // }, [blockchainWeb3]);
+
+  console.log(blockchainWeb3);
   return (
     <div className="App">
       <Nav />

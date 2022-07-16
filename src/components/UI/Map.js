@@ -17,7 +17,7 @@ import mapDataJson from '../../mapData.json';
 // };
 
 const Map = ({ contract, accounts, owners }) => {
-  // console.log(mapDataJson);
+  console.log('Map rendering');
   const [mapData, setMapData] = useState([]);
   const [landModalData, setLandModalData] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -64,7 +64,7 @@ const Map = ({ contract, accounts, owners }) => {
         })}
       </div>
     );
-  }, [mapData]);
+  }, [mapData, accounts]);
 
   return (
     <>
