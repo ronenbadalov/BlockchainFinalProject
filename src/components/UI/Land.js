@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import purchaseLandJson from '../../PurchaseLand.json';
 
 const Land = (props) => {
   const [classColor, setClassColor] = useState('');
@@ -11,13 +12,14 @@ const Land = (props) => {
     else if (props.owners[props.id] == 0) return setClassColor('blue');
     else if (
       `${props.owners[props.id]}`.toLowerCase() ==
-      `${props.accounts[0]}`.toLowerCase()
+        `${props.accounts[0]}`.toLowerCase() &&
+      props.gameMode === 'buyer'
     ) {
       return setClassColor('yellow');
     } else {
       return setClassColor('red');
     }
-  }, [props.accounts]);
+  }, [props.accounts, purchaseLandJson, props.owners, props.contract]);
 
   const showLandDataInModal = () => {
     props.setLandModalData({
