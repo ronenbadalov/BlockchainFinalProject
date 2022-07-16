@@ -56,7 +56,7 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\r\n// OpenZeppelin Contracts v4.4.1 (token/ERC721/extensions/IERC721Metadata.sol)\r\n\r\npragma solidity ^0.8.0;\r\n\r\n/**\r\n * @title ERC-721 Non-Fungible Token Standard, optional metadata extension\r\n * @dev See https://eips.ethereum.org/EIPS/eip-721\r\n */\r\ninterface IERC721Metadata {\r\n    /**\r\n     * @dev Returns the token collection name.\r\n     */\r\n    function name() external view returns (string memory);\r\n\r\n    /**\r\n     * @dev Returns the token collection symbol.\r\n     */\r\n    function symbol() external view returns (string memory);\r\n\r\n    /**\r\n     * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.\r\n     */\r\n    function tokenURI(uint256 tokenId) external view returns (string memory);\r\n}",
-  "sourcePath": "C:\\Users\\Eliran\\Downloads\\BlockchainFinalProject-main\\BlockchainFinalProject-main\\contracts\\tokens\\IERC721Metadata.sol",
+  "sourcePath": "C:\\Users\\trr01\\Desktop\\VSC projects\\BlockchainFinalProject\\contracts\\tokens\\IERC721Metadata.sol",
   "ast": {
     "absolutePath": "project:/contracts/tokens/IERC721Metadata.sol",
     "exportedSymbols": {
@@ -325,7 +325,11 @@
   },
   "networks": {},
   "schemaVersion": "3.4.8",
+<<<<<<< HEAD
   "updatedAt": "2022-07-16T10:15:39.422Z",
+=======
+  "updatedAt": "2022-07-16T11:00:46.534Z",
+>>>>>>> 5a9d4c7c9a9aaf214e2e6d256d84bfec7f8657e7
   "devdoc": {
     "details": "See https://eips.ethereum.org/EIPS/eip-721",
     "kind": "dev",

@@ -1,0 +1,21 @@
+.card {
+  width: 400px;
+  height: 400px;
+  border: 1px solid #80808069;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #228fdd10;
+  }
+  .img {
+  }
+
+  .p {
+    text-align: center;
+    font-size: 26pt;
+    font-weight: 400;
+  }
+}

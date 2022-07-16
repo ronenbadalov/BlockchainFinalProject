@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider, Link } from "@mui/material";
 // import { Link } from "react-router-dom";
 import classes from "./Nav.module.scss";
-const Nav = () => {
+const Nav = (props) => {
   const darkTheme = createTheme({
     palette: {
       mode: "dark",
@@ -29,7 +29,11 @@ const Nav = () => {
               </Link>
             </Typography>
             <Typography variant="p" component="div" sx={{ margin: "0 1rem" }}>
-              Hi Guest
+              {`Hi ${props.gameMode === "guest" ? "Guest" : ""} ${
+                props.gameMode === "buyer" && props.userName
+                  ? props.userName
+                  : "Anonymous"
+              }`}
             </Typography>
           </Toolbar>
         </AppBar>

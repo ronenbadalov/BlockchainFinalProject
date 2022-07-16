@@ -4,15 +4,31 @@ import Loader from './components/Loader/Loader';
 import Map from './components/UI/Map';
 import Nav from './components/layout/Nav.js';
 import './App.scss';
-
+import GameMode from './components/GameMode/GameMode';
 import PurchaseLandContract from './PurchaseLand.json';
 import getWeb3 from './getWeb3';
 
-// const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
+  const [gameMode, setGameMode] = useState(null);
+  const [userName, setUserName] = useState(null);
   const [blockchainWeb3, setBlockchainWeb3] = useState({});
+
+  // useEffect(() => {
+  //   let isApiSubscribed = true;
+  //   if (isApiSubscribed) {
+  //     (async () => {
+  //       setIsLoading(true);
+  //       await wait(3000);
+  //       setIsLoading(false);
+  //     })();
+  //   }
+  //   return () => {
+  //     isApiSubscribed = false;
+  //   };
+  // }, [gameMode]);
 
   useEffect(() => {
     (async () => {
@@ -54,32 +70,39 @@ function App() {
         contract: instance,
         owners: ownersOfLands,
       });
-      setIsLoading(false);
     })();
   }, []);
 
-  // useEffect(() => {
-  //   if (blockchainWeb3.accounts && blockchainWeb3.contract) setIsLoading(false);
-  // }, [blockchainWeb3]);
+  useEffect(() => {
+    if (blockchainWeb3.accounts && blockchainWeb3.contract) setIsLoading(false);
+  }, [blockchainWeb3]);
 
   return (
-    <div className="App">
-      <Nav />
-      <div className="home">
-        {isLoading && <Loader />}
+    <>
+      {!gameMode && (
+        <GameMode setGameMode={setGameMode} setUserName={setUserName} />
+      )}
+      {gameMode && (
+        <div className="App">
+          <Nav gameMode={gameMode} userName={userName} />
+          <div className="home">
+            {isLoading && <Loader />}
 
-        {!isLoading && (
-          <>
-            <Legend />{' '}
-            <Map
-              owners={blockchainWeb3.owners}
-              accounts={blockchainWeb3.accounts}
-              contract={blockchainWeb3.contract}
-            />
-          </>
-        )}
-      </div>
-    </div>
+            {!isLoading && (
+              <>
+                <Legend />{' '}
+                <Map
+                  gameMode={gameMode}
+                  owners={blockchainWeb3.owners}
+                  accounts={blockchainWeb3.accounts}
+                  contract={blockchainWeb3.contract}
+                />
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

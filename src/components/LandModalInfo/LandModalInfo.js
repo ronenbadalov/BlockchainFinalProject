@@ -10,20 +10,14 @@ import {
   RadioGroup,
   Switch,
   TextField,
-} from '@mui/material';
-import React, { useContext, useState } from 'react';
-// import { updateLand } from "../../helpers/landHelper";
-// import CurUserContext from "../../store/curUser-context";
-import classes from './LandModalInfo.module.scss';
+} from "@mui/material";
+import React, { useState } from "react";
+import classes from "./LandModalInfo.module.scss";
 const LandModalInfo = ({ landData, onClose }) => {
-  // const curUserCtx = useContext(CurUserContext);
-  const [isMyLand, setIsMyLand] = useState(
-    // curUserCtx.user.id === landData.owner
-    false
-  );
+  const [isMyLand, setIsMyLand] = useState(false);
   const sxClasses = {
-    marginRight: 'auto',
-    maxWidth: '200px',
+    marginRight: "auto",
+    maxWidth: "200px",
   };
 
   const formSubmitHandler = async (e) => {
@@ -74,9 +68,8 @@ const LandModalInfo = ({ landData, onClose }) => {
               <Input
                 id="landPrice"
                 value={landData.price}
-                // onChange={handleChange('amount')}
-                startAdornment={
-                  <InputAdornment position="start">$</InputAdornment>
+                endAdornment={
+                  <InputAdornment position="end">ETH</InputAdornment>
                 }
                 disabled={!isMyLand}
                 label="Price"
