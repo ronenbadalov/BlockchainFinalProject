@@ -62,7 +62,6 @@ function App() {
   //   if (blockchainWeb3.accounts && blockchainWeb3.contract) setIsLoading(false);
   // }, [blockchainWeb3]);
 
-  console.log(blockchainWeb3);
   return (
     <div className="App">
       <Nav />
