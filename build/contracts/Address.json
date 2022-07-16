@@ -3970,7 +3970,11 @@
   },
   "networks": {},
   "schemaVersion": "3.4.8",
+<<<<<<< HEAD
+  "updatedAt": "2022-07-16T10:15:39.428Z",
+=======
   "updatedAt": "2022-07-16T11:00:46.542Z",
+>>>>>>> 5a9d4c7c9a9aaf214e2e6d256d84bfec7f8657e7
   "devdoc": {
     "details": "Collection of functions related to the address type",
     "kind": "dev",
