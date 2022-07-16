@@ -16,12 +16,11 @@ import mapDataJson from '../../mapData.json';
 //   }
 // };
 
-const Map = ({ contract }) => {
+const Map = ({ contract, accounts, owners }) => {
   // console.log(mapDataJson);
   const [mapData, setMapData] = useState([]);
   const [landModalData, setLandModalData] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
   const handleModalOpen = useCallback(() => {
     setShowModal(true);
   }, []);
@@ -44,6 +43,8 @@ const Map = ({ contract }) => {
                 return (
                   <Col key={land.id} className="p-0 m-0">
                     <Land
+                      owners={owners}
+                      accounts={accounts}
                       contract={contract}
                       id={land.id}
                       type={land.type}

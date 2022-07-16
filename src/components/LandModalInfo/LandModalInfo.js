@@ -40,19 +40,20 @@ const LandModalInfo = ({ landData, onClose }) => {
 
   const buyLandHandler = async () => {
     const isTaken = await isCurrentLandTaken();
+    console.log(isTaken);
     if (!isTaken) {
-      console.log('in');
       await landData.contract.methods
         .purchase(landData.id, landData.price)
-        .send({ value: landData.price * 1000000000000000000 });
+        .send({
+          value: landData.price * 1000000000000000000,
+        });
     }
   };
 
   const isCurrentLandTaken = async () => {
     const owner = await landData.contract.methods.getOwner(landData.id).call();
-    console.log(owner);
-    if (owner !== null) return true;
-    return false;
+    if (owner == 0) return false;
+    return true;
   };
   return (
     <div>

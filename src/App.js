@@ -37,7 +37,14 @@ function App() {
           console.log(results, error);
         }
       );
-      setBlockchainWeb3({ web3, accounts, contract: instance });
+
+      const ownersOfLands = await instance.methods.getOwners().call();
+      setBlockchainWeb3({
+        web3,
+        accounts,
+        contract: instance,
+        owners: ownersOfLands,
+      });
 
       setIsLoading(false);
     })();
@@ -50,7 +57,12 @@ function App() {
 
         {!isLoading && (
           <>
-            <Legend /> <Map contract={blockchainWeb3.contract} />
+            <Legend />{' '}
+            <Map
+              owners={blockchainWeb3.owners}
+              accounts={blockchainWeb3.accounts}
+              contract={blockchainWeb3.contract}
+            />
           </>
         )}
       </div>

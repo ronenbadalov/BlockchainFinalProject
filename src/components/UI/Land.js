@@ -6,27 +6,35 @@ const Land = (props) => {
   const [classColor, setClassColor] = useState('');
   const currentUser = {};
   useEffect(() => {
-    switch (props.type) {
-      case 'land':
-        if (props.isOcupied) {
-          if (props.owner === currentUser.id) {
-            if (props.forSale) setClassColor('orange');
-            else setClassColor('yellow');
-          } else {
-            if (props.forSale) setClassColor('purple');
-            else setClassColor('red');
-          }
-        } else {
-          setClassColor('blue');
-        }
-        break;
-      case 'road_land':
-        setClassColor('gray');
-        break;
-      case 'park_land':
-        setClassColor('green');
-        break;
-    }
+    (async () => {
+      if (props.type === 'road_land') return setClassColor('gray');
+      else if (props.type === 'park_land') return setClassColor('green');
+      else if (props.owners[props.id] == 0) return setClassColor('blue');
+      else if (props.owners[props.id] == props.accounts[0])
+        return setClassColor('yellow');
+      else return setClassColor('red');
+    })();
+    // switch (props.type) {
+    //   case 'land':
+    //     if (props.isOcupied) {
+    //       if (props.owner === currentUser.id) {
+    //         if (props.forSale) setClassColor('orange');
+    //         else setClassColor('yellow');
+    //       } else {
+    //         if (props.forSale) setClassColor('purple');
+    //         else setClassColor('red');
+    //       }
+    //     } else {
+    //       setClassColor('blue');
+    //     }
+    //     break;
+    //   case 'road_land':
+    //     setClassColor('gray');
+    //     break;
+    //   case 'park_land':
+    //     setClassColor('green');
+    //     break;
+    // }
   }, []);
 
   const showLandDataInModal = () => {
@@ -39,8 +47,15 @@ const Land = (props) => {
       isOccupied: props.isOccupied,
       disabled: props.disabled,
       contract: props.contract,
+      accounts: props.accounts,
     });
     props.onClick();
+  };
+
+  const isCurrentLandTaken = async () => {
+    const owner = await props.contract.methods.getOwner(props.id).call();
+    if (owner == 0) return false;
+    return true;
   };
 
   return (

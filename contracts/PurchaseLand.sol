@@ -16,7 +16,7 @@ contract PurchaseLand is ERC721 {
     }
 
     function purchase(uint256 landId, uint256 price) public payable returns (uint256) {
-        require(landId >= 0 && landId <= 799);
+        require(landId >= 0 && landId <= 2499);
         require(owners[landId] == 0x0000000000000000000000000000000000000000);
         _price[landId] = price;
         _mint(msg.sender, landId);
