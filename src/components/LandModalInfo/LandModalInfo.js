@@ -10,14 +10,23 @@ import {
   RadioGroup,
   Switch,
   TextField,
-} from "@mui/material";
-import React, { useState } from "react";
-import classes from "./LandModalInfo.module.scss";
-const LandModalInfo = ({ landData, onClose }) => {
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import GameMode from '../GameMode/GameMode';
+import classes from './LandModalInfo.module.scss';
+const LandModalInfo = ({
+  landData,
+  onClose,
+  refreshMap,
+  accounts,
+  contract,
+  gameMode,
+}) => {
   const [isMyLand, setIsMyLand] = useState(false);
+
   const sxClasses = {
-    marginRight: "auto",
-    maxWidth: "200px",
+    marginRight: 'auto',
+    maxWidth: '200px',
   };
 
   const formSubmitHandler = async (e) => {
@@ -39,9 +48,19 @@ const LandModalInfo = ({ landData, onClose }) => {
       await landData.contract.methods
         .purchase(landData.id, landData.price)
         .send({
+          from: accounts[0],
           value: landData.price * 1000000000000000000,
         });
+      refreshMap();
     }
+  };
+
+  const isMyLandHandler = async () => {
+    const idOfOwnerLand = await contract.methods.getOwner(landData.id).call();
+    landData.owner = idOfOwnerLand;
+    console.log(idOfOwnerLand);
+    if (idOfOwnerLand == accounts[0] && gameMode === 'buyer') setIsMyLand(true);
+    else setIsMyLand(false);
   };
 
   const isCurrentLandTaken = async () => {
@@ -49,6 +68,12 @@ const LandModalInfo = ({ landData, onClose }) => {
     if (owner == 0) return false;
     return true;
   };
+
+  useEffect(() => {
+    (async () => {
+      await isMyLandHandler();
+    })();
+  }, []);
   return (
     <div>
       <h3>Land {landData.id}</h3>
@@ -117,7 +142,7 @@ const LandModalInfo = ({ landData, onClose }) => {
           <Button variant="contained">Play Game!</Button>
           <Button
             variant="contained"
-            disabled={!landData.forSale}
+            disabled={gameMode === 'guest' || !landData.forSale}
             type="submit"
             onClick={buyLandHandler}
           >

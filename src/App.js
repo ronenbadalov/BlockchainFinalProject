@@ -42,19 +42,32 @@ function App() {
       const deployedNetwork = PurchaseLandContract.networks[networkId];
       const instance = new web3.eth.Contract(
         PurchaseLandContract.abi,
-        deployedNetwork && deployedNetwork.address,
-        { from: accounts[0] }
+        deployedNetwork && deployedNetwork.address
       );
 
+      const ownersOfLands = await instance.methods.getOwners().call();
       //event receiver
       instance.events.LandBought(
         { fromBlock: 'latest' },
         function (error, results) {
-          console.log(results, error);
+          (async () => {
+            const accounts = await web3.eth.getAccounts();
+            instance.methods
+              .getOwners()
+              .call()
+              .then((ownersOfLands) => {
+                console.log(ownersOfLands);
+                setBlockchainWeb3({
+                  web3: web3,
+                  contract: instance,
+                  owners: ownersOfLands,
+                  accounts,
+                });
+              });
+          })();
         }
       );
 
-      const ownersOfLands = await instance.methods.getOwners().call();
       window.ethereum.on('accountsChanged', function (accounts) {
         setBlockchainWeb3({
           web3: web3,
@@ -77,6 +90,7 @@ function App() {
     if (blockchainWeb3.accounts && blockchainWeb3.contract) setIsLoading(false);
   }, [blockchainWeb3]);
 
+  console.log(blockchainWeb3.accounts);
   return (
     <>
       {!gameMode && (
