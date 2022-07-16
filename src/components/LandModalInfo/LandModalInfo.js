@@ -22,19 +22,45 @@ const LandModalInfo = ({ landData, onClose }) => {
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
+    // if (curUserCtx.user.balance < landData.price) {
+    //   alert("You don't have enough money to buy this land");
+    //   return;
+    // }
+    // const res = await updateLand(landData.id, {
+    //   isOcupied: curUserCtx.user.id,
+    // });
+    // console.log(res);
+  };
+
+  const buyLandHandler = async () => {
+    const isTaken = await isCurrentLandTaken();
+    console.log(isTaken);
+    if (!isTaken) {
+      await landData.contract.methods
+        .purchase(landData.id, landData.price)
+        .send({
+          value: landData.price * 1000000000000000000,
+        });
+    }
+  };
+
+  const isCurrentLandTaken = async () => {
+    const owner = await landData.contract.methods.getOwner(landData.id).call();
+    if (owner == 0) return false;
+    return true;
   };
   return (
     <div>
       <h3>Land {landData.id}</h3>
       <form onSubmit={formSubmitHandler}>
-        <div className={classes["formContainer"]}>
-          <div className={classes["formSection"]}>
+        <div className={classes['formContainer']}>
+          <div className={classes['formSection']}>
             <TextField
               id="standard-basic"
               label="Owner"
               variant="standard"
               disabled={true}
-              value={landData.owner ? landData.owner : "none"}
+              value={landData.owner ? landData.owner : 'none'}
               sx={{ ...sxClasses }}
             />
             <FormControl sx={{ marginTop: 2, ...sxClasses }}>
@@ -50,7 +76,7 @@ const LandModalInfo = ({ landData, onClose }) => {
               />
             </FormControl>
           </div>
-          <div className={classes["formSection"]}>
+          <div className={classes['formSection']}>
             <FormControlLabel
               control={
                 <Switch checked={landData.forSale} disabled={!isMyLand} />
@@ -87,12 +113,13 @@ const LandModalInfo = ({ landData, onClose }) => {
             </FormControl>
           </div>
         </div>
-        <div className={classes["btnSection"]}>
+        <div className={classes['btnSection']}>
           <Button variant="contained">Play Game!</Button>
           <Button
             variant="contained"
             disabled={!landData.forSale}
             type="submit"
+            onClick={buyLandHandler}
           >
             Buy
           </Button>
