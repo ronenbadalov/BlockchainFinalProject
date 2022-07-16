@@ -5,19 +5,8 @@ import { Row, Col } from "react-bootstrap";
 import MUIModal from "../Modal/MUIModal";
 import LandModalInfo from "../LandModalInfo/LandModalInfo.js";
 import mapDataJson from "../../mapData.json";
-// const getMap = async () => {
-//   try {
-//     const res = await fetch("http://127.0.0.1:5000/land/getAll");
-//     if (!res.ok) throw new Error("error while fetching map");
-//     const data = await res.json();
-//     return data;
-//   } catch (e) {
-//     console.error(e.message);
-//   }
-// };
 
 const Map = ({ contract, accounts, owners }) => {
-  console.log(mapDataJson);
   const [mapData, setMapData] = useState([]);
   const [landModalData, setLandModalData] = useState([]);
   const [showModal, setShowModal] = useState(false);
