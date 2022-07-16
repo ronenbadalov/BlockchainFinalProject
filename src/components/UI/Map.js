@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Land from "./Land";
-import classes from "./Map.module.scss";
-import { Row, Col } from "react-bootstrap";
-import MUIModal from "../Modal/MUIModal";
-import LandModalInfo from "../LandModalInfo/LandModalInfo.js";
-import mapDataJson from "../../mapData.json";
+import React, { useCallback, useEffect, useState } from 'react';
+import Land from './Land';
+import classes from './Map.module.scss';
+import { Row, Col } from 'react-bootstrap';
+import MUIModal from '../Modal/MUIModal';
+import LandModalInfo from '../LandModalInfo/LandModalInfo.js';
+import mapDataJson from '../../mapData.json';
 // const getMap = async () => {
 //   try {
 //     const res = await fetch("http://127.0.0.1:5000/land/getAll");
@@ -17,7 +17,6 @@ import mapDataJson from "../../mapData.json";
 // };
 
 const Map = ({ contract, accounts, owners }) => {
-  console.log(mapDataJson);
   const [mapData, setMapData] = useState([]);
   const [landModalData, setLandModalData] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -35,10 +34,10 @@ const Map = ({ contract, accounts, owners }) => {
 
   const MapComp = useCallback(() => {
     return (
-      <div className={classes["container"]} style={{ margin: "30px" }}>
+      <div className={classes['container']} style={{ margin: '30px' }}>
         {mapData.map((row, i) => {
           return (
-            <Row className={classes["row"]} key={i} xs={"auto"}>
+            <Row className={classes['row']} key={i} xs={'auto'}>
               {row.map((land) => {
                 return (
                   <Col key={land.id} className="p-0 m-0">
@@ -64,7 +63,7 @@ const Map = ({ contract, accounts, owners }) => {
         })}
       </div>
     );
-  }, [mapData, handleModalOpen]);
+  }, [mapData, accounts, handleModalOpen]);
 
   return (
     <>
@@ -72,7 +71,7 @@ const Map = ({ contract, accounts, owners }) => {
       <MUIModal
         open={showModal}
         onClose={handleModalClose}
-        sx={{ maxWidth: "40%" }}
+        sx={{ maxWidth: '40%' }}
       >
         <LandModalInfo landData={landModalData} onClose={handleModalClose} />
       </MUIModal>

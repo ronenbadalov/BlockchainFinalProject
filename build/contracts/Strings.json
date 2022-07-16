@@ -2565,7 +2565,11 @@
   },
   "networks": {},
   "schemaVersion": "3.4.8",
+<<<<<<< HEAD
+  "updatedAt": "2022-07-16T10:15:39.433Z",
+=======
   "updatedAt": "2022-07-16T11:00:46.558Z",
+>>>>>>> 5a9d4c7c9a9aaf214e2e6d256d84bfec7f8657e7
   "devdoc": {
     "details": "String operations.",
     "kind": "dev",

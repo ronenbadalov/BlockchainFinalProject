@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import Legend from "./components/Legend/Legend";
-import Loader from "./components/Loader/Loader";
-import Map from "./components/UI/Map";
-import Nav from "./components/layout/Nav.js";
-import "./App.scss";
-import GameMode from "./components/GameMode/GameMode";
+import React, { useEffect, useState } from 'react';
+import Legend from './components/Legend/Legend';
+import Loader from './components/Loader/Loader';
+import Map from './components/UI/Map';
+import Nav from './components/layout/Nav.js';
+import './App.scss';
+import GameMode from './components/GameMode/GameMode';
 import PurchaseLandContract from './PurchaseLand.json';
 import getWeb3 from './getWeb3';
 
@@ -55,16 +55,27 @@ function App() {
       );
 
       const ownersOfLands = await instance.methods.getOwners().call();
+      window.ethereum.on('accountsChanged', function (accounts) {
+        setBlockchainWeb3({
+          web3: web3,
+          contract: instance,
+          owners: ownersOfLands,
+          accounts,
+        });
+      });
+
       setBlockchainWeb3({
         web3,
         accounts,
         contract: instance,
         owners: ownersOfLands,
       });
-
-      setIsLoading(false);
     })();
   }, []);
+
+  useEffect(() => {
+    if (blockchainWeb3.accounts && blockchainWeb3.contract) setIsLoading(false);
+  }, [blockchainWeb3]);
 
   return (
     <>
@@ -79,17 +90,20 @@ function App() {
 
             {!isLoading && (
               <>
-                <Legend /> <Map gameMode={gameMode}
-                owners={blockchainWeb3.owners}
-                accounts={blockchainWeb3.accounts}
-                contract={blockchainWeb3.contract} />
+                <Legend />{' '}
+                <Map
+                  gameMode={gameMode}
+                  owners={blockchainWeb3.owners}
+                  accounts={blockchainWeb3.accounts}
+                  contract={blockchainWeb3.contract}
+                />
               </>
             )}
           </div>
         </div>
       )}
     </>
-  )
-            }
+  );
+}
 
 export default App;
