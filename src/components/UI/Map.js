@@ -49,8 +49,8 @@ const Map = ({ contract, accounts, owners, gameMode }) => {
                     <Land
                       gameMode={gameMode}
                       owners={owners}
-                      accounts={accounts}
-                      contract={contract}
+                      accounts={accounts ? accounts : []}
+                      contract={contract ? contract : null}
                       id={land.id}
                       type={land.type}
                       price={land.price}
@@ -86,6 +86,7 @@ const Map = ({ contract, accounts, owners, gameMode }) => {
           onClose={handleModalClose}
           accounts={accounts}
           contract={contract}
+          owners={owners}
         />
       </MUIModal>
     </>

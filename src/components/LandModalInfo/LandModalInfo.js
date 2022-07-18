@@ -10,10 +10,10 @@ import {
   RadioGroup,
   Switch,
   TextField,
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import GameMode from '../GameMode/GameMode';
-import classes from './LandModalInfo.module.scss';
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import GameMode from "../GameMode/GameMode";
+import classes from "./LandModalInfo.module.scss";
 const LandModalInfo = ({
   landData,
   onClose,
@@ -21,29 +21,21 @@ const LandModalInfo = ({
   accounts,
   contract,
   gameMode,
+  owners,
 }) => {
   const [isMyLand, setIsMyLand] = useState(false);
 
   const sxClasses = {
-    marginRight: 'auto',
-    maxWidth: '200px',
+    marginRight: "auto",
+    maxWidth: "200px",
   };
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
-    // if (curUserCtx.user.balance < landData.price) {
-    //   alert("You don't have enough money to buy this land");
-    //   return;
-    // }
-    // const res = await updateLand(landData.id, {
-    //   isOcupied: curUserCtx.user.id,
-    // });
-    // console.log(res);
   };
 
   const buyLandHandler = async () => {
     const isTaken = await isCurrentLandTaken();
-    console.log(isTaken);
     if (!isTaken) {
       await landData.contract.methods
         .purchase(landData.id, landData.price)
@@ -52,14 +44,14 @@ const LandModalInfo = ({
           value: landData.price * 1000000000000000000,
         });
       refreshMap();
+      onClose();
     }
   };
 
   const isMyLandHandler = async () => {
     const idOfOwnerLand = await contract.methods.getOwner(landData.id).call();
-    landData.owner = idOfOwnerLand;
-    console.log(idOfOwnerLand);
-    if (idOfOwnerLand == accounts[0] && gameMode === 'buyer') setIsMyLand(true);
+    // landData.owner = `${idOfOwnerLand}`;
+    if (idOfOwnerLand == accounts[0] && gameMode === "buyer") setIsMyLand(true);
     else setIsMyLand(false);
   };
 
@@ -69,23 +61,31 @@ const LandModalInfo = ({
     return true;
   };
 
+  const saveChangesHandler = () => {};
+
   useEffect(() => {
     (async () => {
       await isMyLandHandler();
     })();
   }, []);
+
   return (
     <div>
       <h3>Land {landData.id}</h3>
       <form onSubmit={formSubmitHandler}>
-        <div className={classes['formContainer']}>
-          <div className={classes['formSection']}>
+        <div className={classes["formContainer"]}>
+          <div className={classes["formSection"]}>
             <TextField
               id="standard-basic"
               label="Owner"
               variant="standard"
               disabled={true}
-              value={landData.owner ? landData.owner : 'none'}
+              value={
+                `${owners[landData.id]}`.toLowerCase() !==
+                "0x0000000000000000000000000000000000000000"
+                  ? `${owners[landData.id]}`.toLowerCase()
+                  : "none"
+              }
               sx={{ ...sxClasses }}
             />
             <FormControl sx={{ marginTop: 2, ...sxClasses }}>
@@ -101,7 +101,7 @@ const LandModalInfo = ({
               />
             </FormControl>
           </div>
-          <div className={classes['formSection']}>
+          <div className={classes["formSection"]}>
             <FormControlLabel
               control={
                 <Switch checked={landData.forSale} disabled={!isMyLand} />
@@ -138,16 +138,27 @@ const LandModalInfo = ({
             </FormControl>
           </div>
         </div>
-        <div className={classes['btnSection']}>
+        <div className={classes["btnSection"]}>
           <Button variant="contained">Play Game!</Button>
-          <Button
-            variant="contained"
-            disabled={gameMode === 'guest' || !landData.forSale}
-            type="submit"
-            onClick={buyLandHandler}
-          >
-            Buy
-          </Button>
+          {!isMyLand && (
+            <Button
+              variant="contained"
+              disabled={gameMode === "guest" || !landData.forSale}
+              type="submit"
+              onClick={buyLandHandler}
+            >
+              Buy
+            </Button>
+          )}
+          {isMyLand && (
+            <Button
+              variant="contained"
+              type="submit"
+              onClick={saveChangesHandler}
+            >
+              Save Changes
+            </Button>
+          )}
           <Button variant="contained" onClick={onClose}>
             Close
           </Button>
