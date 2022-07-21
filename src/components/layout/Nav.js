@@ -2,7 +2,8 @@ import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider, Link } from "@mui/material";
+import { createTheme, ThemeProvider, Link, IconButton } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
 // import { Link } from "react-router-dom";
 import classes from "./Nav.module.scss";
 const Nav = (props) => {
@@ -32,9 +33,14 @@ const Nav = (props) => {
               {`Hi ${props.gameMode === "guest" ? "Guest" : ""} ${
                 props.gameMode === "buyer" && props.userName
                   ? props.userName
-                  : "Anonymous"
+                  : ""
+              } ${
+                props.gameMode === "buyer" && !props.userName ? "Anonymous" : ""
               }`}
             </Typography>
+            <IconButton onClick={props.handleLogout}>
+              <LogoutIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
       </ThemeProvider>

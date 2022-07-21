@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Legend from './components/Legend/Legend';
 import Loader from './components/Loader/Loader';
 import Map from './components/UI/Map';
@@ -8,27 +8,16 @@ import GameMode from './components/GameMode/GameMode';
 import PurchaseLandContract from './PurchaseLand.json';
 import getWeb3 from './getWeb3';
 
-const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-
 function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [gameMode, setGameMode] = useState(null);
   const [userName, setUserName] = useState(null);
+  const [landData, setLandData] = useState({
+    prices: [],
+    games: [],
+    notForSale: [],
+  });
   const [blockchainWeb3, setBlockchainWeb3] = useState({});
-
-  // useEffect(() => {
-  //   let isApiSubscribed = true;
-  //   if (isApiSubscribed) {
-  //     (async () => {
-  //       setIsLoading(true);
-  //       await wait(3000);
-  //       setIsLoading(false);
-  //     })();
-  //   }
-  //   return () => {
-  //     isApiSubscribed = false;
-  //   };
-  // }, [gameMode]);
 
   useEffect(() => {
     (async () => {
@@ -56,7 +45,6 @@ function App() {
               .getOwners()
               .call()
               .then((ownersOfLands) => {
-                console.log(ownersOfLands);
                 setBlockchainWeb3({
                   web3: web3,
                   contract: instance,
@@ -65,6 +53,13 @@ function App() {
                 });
               });
           })();
+        }
+      );
+
+      instance.events.SaveChanges(
+        { fromBlock: 'latest' },
+        function (error, results) {
+          console.log(results);
         }
       );
 
@@ -90,7 +85,19 @@ function App() {
     if (blockchainWeb3.accounts && blockchainWeb3.contract) setIsLoading(false);
   }, [blockchainWeb3]);
 
-  console.log(blockchainWeb3.accounts);
+  useEffect(() => {
+    const gameModeStorage = localStorage.getItem('gameMode');
+    if (gameModeStorage) setGameMode(gameModeStorage);
+    if (gameModeStorage === 'buyer') setUserName(localStorage.getItem('name'));
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem('gameMode');
+    localStorage.removeItem('name');
+    setGameMode(null);
+    setUserName(null);
+  }, []);
+
   return (
     <>
       {!gameMode && (
@@ -98,13 +105,17 @@ function App() {
       )}
       {gameMode && (
         <div className="App">
-          <Nav gameMode={gameMode} userName={userName} />
+          <Nav
+            gameMode={gameMode}
+            userName={userName}
+            handleLogout={handleLogout}
+          />
           <div className="home">
             {isLoading && <Loader />}
 
             {!isLoading && (
               <>
-                <Legend />{' '}
+                <Legend />
                 <Map
                   gameMode={gameMode}
                   owners={blockchainWeb3.owners}

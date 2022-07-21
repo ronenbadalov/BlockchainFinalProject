@@ -20,6 +20,8 @@ const GameMode = (props) => {
             const name = prompt("How should we call you?", "");
             props.setUserName(name);
             props.setGameMode("buyer");
+            localStorage.setItem("gameMode", "buyer");
+            localStorage.setItem("name", name);
           }}
         />
         <Card
@@ -27,6 +29,7 @@ const GameMode = (props) => {
           cardText="Guest"
           onClick={() => {
             props.setGameMode("guest");
+            localStorage.setItem("gameMode", "guest");
           }}
         />
       </div>

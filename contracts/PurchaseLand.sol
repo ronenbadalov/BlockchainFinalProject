@@ -5,26 +5,28 @@ import "./tokens/ERC721.sol";
 contract PurchaseLand is ERC721 {
     address [2500] public owners;
     address payable owner;
-    uint256 [2500] _price;
-    bool [2500] forSale;
+    uint256 [2500] public price;
+    bool [2500] public notForSale;
+    string [2500] public games;
 
     event LandBought(address indexedFrom, uint256 landId, address owner);
     event LandTransfer(address from, address to, uint landId);
     event PriceChanged(uint landId, uint256 newPrice);
+    event SaveChanges(uint256[2500] price,string[2500] games, bool[2500] notForSale);
+
 
     constructor() ERC721("MetaLand", "MND") {
         owner = payable(msg.sender);
-        for(uint i = 0; i <= 2499; i++)
-            forSale[i] = true;
+       
     }
 
-    function purchase(uint256 landId, uint256 price) public payable returns (uint256) {
+    function purchase(uint256 landId, uint256 pay) public payable returns (uint256) {
         require(landId >= 0 && landId <= 2499);
         require(owners[landId] == 0x0000000000000000000000000000000000000000);
-        _price[landId] = price;
+        price[landId] = pay;
         _mint(msg.sender, landId);
         owners[landId] = msg.sender;
-        forSale[landId] = false;
+        notForSale[landId] = true;
         emit LandBought(msg.sender, landId, owners[landId]);
         return landId;
     }
@@ -45,12 +47,15 @@ contract PurchaseLand is ERC721 {
     }
     function setPrice(uint256 landId, uint256 newPrice) public virtual {
         require(ownerOf(landId) == msg.sender);
-        _price[landId] = newPrice;
+        price[landId] = newPrice;
         emit PriceChanged(landId, newPrice);
     }
 
-    function setSale(address client, uint256 landId, bool status) public payable{
-        require(owners[landId] == msg.sender);
-        forSale[landId] = status;
+    function saveChanged(uint256 landId, uint256 pay, bool status, string memory nameGame) public virtual{
+        // require(owners[landId] == msg.sender);
+        // notForSale[landId] = status;
+        // price[landId] = pay;
+        // games[landId] = nameGame;
+        emit SaveChanges(price, games, notForSale);
     }
 }
