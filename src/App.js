@@ -1,17 +1,22 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Legend from "./components/Legend/Legend";
-import Loader from "./components/Loader/Loader";
-import Map from "./components/UI/Map";
-import Nav from "./components/layout/Nav.js";
-import "./App.scss";
-import GameMode from "./components/GameMode/GameMode";
-import PurchaseLandContract from "./PurchaseLand.json";
-import getWeb3 from "./getWeb3";
+import React, { useCallback, useEffect, useState } from 'react';
+import Legend from './components/Legend/Legend';
+import Loader from './components/Loader/Loader';
+import Map from './components/UI/Map';
+import Nav from './components/layout/Nav.js';
+import './App.scss';
+import GameMode from './components/GameMode/GameMode';
+import PurchaseLandContract from './PurchaseLand.json';
+import getWeb3 from './getWeb3';
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [gameMode, setGameMode] = useState(null);
   const [userName, setUserName] = useState(null);
+  const [landData, setLandData] = useState({
+    prices: [],
+    games: [],
+    notForSale: [],
+  });
   const [blockchainWeb3, setBlockchainWeb3] = useState({});
 
   useEffect(() => {
@@ -32,7 +37,7 @@ function App() {
       const ownersOfLands = await instance.methods.getOwners().call();
       //event receiver
       instance.events.LandBought(
-        { fromBlock: "latest" },
+        { fromBlock: 'latest' },
         function (error, results) {
           (async () => {
             const accounts = await web3.eth.getAccounts();
@@ -51,7 +56,14 @@ function App() {
         }
       );
 
-      window.ethereum.on("accountsChanged", function (accounts) {
+      instance.events.SaveChanges(
+        { fromBlock: 'latest' },
+        function (error, results) {
+          console.log(results);
+        }
+      );
+
+      window.ethereum.on('accountsChanged', function (accounts) {
         setBlockchainWeb3({
           web3: web3,
           contract: instance,
@@ -74,14 +86,14 @@ function App() {
   }, [blockchainWeb3]);
 
   useEffect(() => {
-    const gameModeStorage = localStorage.getItem("gameMode");
+    const gameModeStorage = localStorage.getItem('gameMode');
     if (gameModeStorage) setGameMode(gameModeStorage);
-    if (gameModeStorage === "buyer") setUserName(localStorage.getItem("name"));
+    if (gameModeStorage === 'buyer') setUserName(localStorage.getItem('name'));
   }, []);
 
   const handleLogout = useCallback(() => {
-    localStorage.removeItem("gameMode");
-    localStorage.removeItem("name");
+    localStorage.removeItem('gameMode');
+    localStorage.removeItem('name');
     setGameMode(null);
     setUserName(null);
   }, []);

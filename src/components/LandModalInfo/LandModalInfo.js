@@ -10,9 +10,9 @@ import {
   RadioGroup,
   Switch,
   TextField,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import classes from "./LandModalInfo.module.scss";
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import classes from './LandModalInfo.module.scss';
 const LandModalInfo = ({
   landData,
   onClose,
@@ -24,14 +24,14 @@ const LandModalInfo = ({
   handleGameModalOpen,
 }) => {
   const [isMyLand, setIsMyLand] = useState(false);
-  const [landOwner, setLandOwner] = useState("");
-  const [price, setPrice] = useState("");
+  const [landOwner, setLandOwner] = useState('');
+  const [price, setPrice] = useState('');
   const [forSale, setForSale] = useState(true);
-  const [game, setGame] = useState({ name: "" });
+  const [game, setGame] = useState({ name: '' });
 
   const sxClasses = {
-    marginRight: "auto",
-    maxWidth: "200px",
+    marginRight: 'auto',
+    maxWidth: '200px',
   };
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const LandModalInfo = ({
 
   const isMyLandHandler = async () => {
     const idOfOwnerLand = await contract.methods.getOwner(landData.id).call();
-    if (idOfOwnerLand === accounts[0] && gameMode === "buyer")
+    if (idOfOwnerLand === accounts[0] && gameMode === 'buyer')
       setIsMyLand(true);
     else setIsMyLand(false);
   };
@@ -76,7 +76,11 @@ const LandModalInfo = ({
   // };
 
   const saveChangesHandler = async () => {
-    console.log("changes saved");
+    console.log('in');
+    console.log(landData.id, price, forSale, game?.name);
+    await contract.methods
+      .saveChanged(+landData.id, +price, !forSale, game?.name)
+      .call();
     // if (game.name === "Numble")
     //   gameUrl = "https://numble-ronen-badalov.netlify.app/";
     // if (game.name === "TicTacToe")
@@ -89,9 +93,7 @@ const LandModalInfo = ({
     //   forSale,
     //   innerData: { name: game.name, url: gameUrl },
     // };
-
-    refreshMap();
-    onClose();
+    // onClose();
   };
 
   useEffect(() => {
@@ -104,8 +106,8 @@ const LandModalInfo = ({
     <div>
       <h3>Land {landData.id}</h3>
       <form onSubmit={formSubmitHandler}>
-        <div className={classes["formContainer"]}>
-          <div className={classes["formSection"]}>
+        <div className={classes['formContainer']}>
+          <div className={classes['formSection']}>
             <TextField
               id="standard-basic"
               label="Owner"
@@ -113,9 +115,9 @@ const LandModalInfo = ({
               disabled={true}
               value={
                 `${owners[landData.id]}`.toLowerCase() !==
-                "0x0000000000000000000000000000000000000000"
+                '0x0000000000000000000000000000000000000000'
                   ? `${owners[landData.id]}`.toLowerCase()
-                  : "none"
+                  : 'none'
               }
               sx={{ ...sxClasses }}
             />
@@ -135,7 +137,7 @@ const LandModalInfo = ({
               />
             </FormControl>
           </div>
-          <div className={classes["formSection"]}>
+          <div className={classes['formSection']}>
             <FormControlLabel
               control={
                 <Switch
@@ -157,7 +159,7 @@ const LandModalInfo = ({
               <RadioGroup
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
-                value={game?.name ? game?.name : ""}
+                value={game?.name ? game?.name : ''}
                 onChange={(e) => {
                   setGame({ name: e.target.value });
                 }}
@@ -182,7 +184,7 @@ const LandModalInfo = ({
             </FormControl>
           </div>
         </div>
-        <div className={classes["btnSection"]}>
+        <div className={classes['btnSection']}>
           <Button
             variant="contained"
             disabled={!game?.url}
@@ -193,7 +195,7 @@ const LandModalInfo = ({
           {!isMyLand && (
             <Button
               variant="contained"
-              disabled={gameMode === "guest" || !landData.forSale}
+              disabled={gameMode === 'guest' || !landData.forSale}
               type="submit"
               onClick={buyLandHandler}
             >
