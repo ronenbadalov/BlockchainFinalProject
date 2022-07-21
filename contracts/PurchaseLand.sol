@@ -6,6 +6,7 @@ contract PurchaseLand is ERC721 {
     address [2500] public owners;
     address payable owner;
     uint256 [2500] _price;
+    bool [2500] forSale;
 
     event LandBought(address indexedFrom, uint256 landId, address owner);
     event LandTransfer(address from, address to, uint landId);
@@ -13,6 +14,8 @@ contract PurchaseLand is ERC721 {
 
     constructor() ERC721("MetaLand", "MND") {
         owner = payable(msg.sender);
+        for(uint i = 0; i <= 2499; i++)
+            forSale[i] = true;
     }
 
     function purchase(uint256 landId, uint256 price) public payable returns (uint256) {
@@ -21,6 +24,7 @@ contract PurchaseLand is ERC721 {
         _price[landId] = price;
         _mint(msg.sender, landId);
         owners[landId] = msg.sender;
+        forSale[landId] = false;
         emit LandBought(msg.sender, landId, owners[landId]);
         return landId;
     }
@@ -45,5 +49,8 @@ contract PurchaseLand is ERC721 {
         emit PriceChanged(landId, newPrice);
     }
 
-    
+    function setSale(address client, uint256 landId, bool status) public payable{
+        require(owners[landId] == msg.sender);
+        forSale[landId] = status;
+    }
 }
