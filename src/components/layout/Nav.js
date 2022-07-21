@@ -38,8 +38,8 @@ const Nav = (props) => {
                 props.gameMode === "buyer" && !props.userName ? "Anonymous" : ""
               }`}
             </Typography>
-            <IconButton>
-              <LogoutIcon onClick={props.handleLogout} />
+            <IconButton onClick={props.handleLogout}>
+              <LogoutIcon />
             </IconButton>
           </Toolbar>
         </AppBar>

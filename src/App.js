@@ -8,8 +8,6 @@ import GameMode from "./components/GameMode/GameMode";
 import PurchaseLandContract from "./PurchaseLand.json";
 import getWeb3 from "./getWeb3";
 
-const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-
 function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [gameMode, setGameMode] = useState(null);

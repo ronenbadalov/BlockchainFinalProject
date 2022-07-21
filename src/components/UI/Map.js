@@ -5,6 +5,7 @@ import { Row, Col } from "react-bootstrap";
 import MUIModal from "../Modal/MUIModal";
 import LandModalInfo from "../LandModalInfo/LandModalInfo.js";
 import mapDataJson from "../../mapData.json";
+import GameModal from "../GameModal/GameModal";
 // const getMap = async () => {
 //   try {
 //     const res = await fetch("http://127.0.0.1:5000/land/getAll");
@@ -20,6 +21,7 @@ const Map = ({ contract, accounts, owners, gameMode }) => {
   const [mapData, setMapData] = useState([]);
   const [landModalData, setLandModalData] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showGameModal, setShowGameModal] = useState(false);
   const handleModalOpen = useCallback(() => {
     setShowModal(true);
   }, []);
@@ -28,8 +30,15 @@ const Map = ({ contract, accounts, owners, gameMode }) => {
     setShowModal(false);
   }, []);
 
+  const handleGameModalOpen = useCallback(() => {
+    setShowGameModal(true);
+  }, []);
+
+  const handleGameModalClose = useCallback(() => {
+    setShowGameModal(false);
+  }, []);
+
   const refreshMap = useCallback(() => {
-    console.log("refresh map func");
     setMapData(mapDataJson);
   }, []);
 
@@ -87,7 +96,15 @@ const Map = ({ contract, accounts, owners, gameMode }) => {
           accounts={accounts}
           contract={contract}
           owners={owners}
+          handleGameModalOpen={handleGameModalOpen}
         />
+      </MUIModal>
+      <MUIModal
+        open={showGameModal}
+        onClose={handleGameModalClose}
+        sx={{ maxWidth: "100%", margin: "20px" }}
+      >
+        <GameModal landData={landModalData} />
       </MUIModal>
     </>
   );

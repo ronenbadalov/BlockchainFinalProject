@@ -12,7 +12,6 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import GameMode from "../GameMode/GameMode";
 import classes from "./LandModalInfo.module.scss";
 const LandModalInfo = ({
   landData,
@@ -22,46 +21,78 @@ const LandModalInfo = ({
   contract,
   gameMode,
   owners,
+  handleGameModalOpen,
 }) => {
   const [isMyLand, setIsMyLand] = useState(false);
+  const [landOwner, setLandOwner] = useState("");
+  const [price, setPrice] = useState("");
+  const [forSale, setForSale] = useState(true);
+  const [game, setGame] = useState({ name: "" });
 
   const sxClasses = {
     marginRight: "auto",
     maxWidth: "200px",
   };
 
+  useEffect(() => {
+    setPrice(landData.price);
+    setForSale(landData.forSale);
+    setGame(landData.innerData);
+  }, [landData]);
+
   const formSubmitHandler = async (e) => {
     e.preventDefault();
   };
 
   const buyLandHandler = async () => {
-    const isTaken = await isCurrentLandTaken();
-    if (!isTaken) {
-      await landData.contract.methods
-        .purchase(landData.id, landData.price)
-        .send({
-          from: accounts[0],
-          value: landData.price * 1000000000000000000,
-        });
-      refreshMap();
-      onClose();
-    }
+    const res = await landData.contract.methods
+      .purchase(landData.id, landData.price)
+      .send({
+        from: accounts[0],
+        value: landData.price * 1000000000000000000,
+      });
+    // map[row][col] = {
+    //   ...landData,
+    //   owner: accounts[0],
+    //   isOcupied: true,
+    // };
+
+    refreshMap();
+    onClose();
   };
 
   const isMyLandHandler = async () => {
     const idOfOwnerLand = await contract.methods.getOwner(landData.id).call();
-    // landData.owner = `${idOfOwnerLand}`;
-    if (idOfOwnerLand == accounts[0] && gameMode === "buyer") setIsMyLand(true);
+    if (idOfOwnerLand === accounts[0] && gameMode === "buyer")
+      setIsMyLand(true);
     else setIsMyLand(false);
   };
 
-  const isCurrentLandTaken = async () => {
-    const owner = await landData.contract.methods.getOwner(landData.id).call();
-    if (owner == 0) return false;
-    return true;
-  };
+  // const isCurrentLandTaken = async () => {
+  //   const owner = await landData.contract.methods.getOwner(landData.id).call();
+  //   console.log(owner);
+  //   if (owner === 0) return false;
+  //   return true;
+  // };
 
-  const saveChangesHandler = () => {};
+  const saveChangesHandler = async () => {
+    console.log("changes saved");
+    // if (game.name === "Numble")
+    //   gameUrl = "https://numble-ronen-badalov.netlify.app/";
+    // if (game.name === "TicTacToe")
+    //   gameUrl = "https://toytheater.com/tic-tac-toe/";
+    // if (game.name === "Flappy Bird") gameUrl = "https://flappybird.io/";
+
+    // map[row][col] = {
+    //   ...landData,
+    //   price,
+    //   forSale,
+    //   innerData: { name: game.name, url: gameUrl },
+    // };
+
+    refreshMap();
+    onClose();
+  };
 
   useEffect(() => {
     (async () => {
@@ -92,7 +123,10 @@ const LandModalInfo = ({
               <InputLabel htmlFor="landPrice">Price</InputLabel>
               <Input
                 id="landPrice"
-                value={landData.price}
+                value={price}
+                onChange={(e) => {
+                  setPrice(e.target.value);
+                }}
                 endAdornment={
                   <InputAdornment position="end">ETH</InputAdornment>
                 }
@@ -104,7 +138,13 @@ const LandModalInfo = ({
           <div className={classes["formSection"]}>
             <FormControlLabel
               control={
-                <Switch checked={landData.forSale} disabled={!isMyLand} />
+                <Switch
+                  checked={forSale}
+                  onChange={(e) => {
+                    setForSale(e.target.checked);
+                  }}
+                  disabled={!isMyLand}
+                />
               }
               label="For Sale"
               labelPlacement="start"
@@ -117,6 +157,10 @@ const LandModalInfo = ({
               <RadioGroup
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
+                value={game?.name ? game?.name : ""}
+                onChange={(e) => {
+                  setGame({ name: e.target.value });
+                }}
                 name="row-radio-buttons-group"
               >
                 <FormControlLabel
@@ -130,16 +174,22 @@ const LandModalInfo = ({
                   label="TicTacToe"
                 />
                 <FormControlLabel
-                  value="Game3"
+                  value="Flappy Bird"
                   control={<Radio />}
-                  label="Game3"
+                  label="Flappy Bird"
                 />
               </RadioGroup>
             </FormControl>
           </div>
         </div>
         <div className={classes["btnSection"]}>
-          <Button variant="contained">Play Game!</Button>
+          <Button
+            variant="contained"
+            disabled={!game?.url}
+            onClick={handleGameModalOpen}
+          >
+            Play Game!
+          </Button>
           {!isMyLand && (
             <Button
               variant="contained"
