@@ -12,7 +12,7 @@ contract PurchaseLand is ERC721 {
     event LandBought(address indexedFrom, uint256 landId, address owner);
     event LandTransfer(address from, address to, uint landId);
     event PriceChanged(uint landId, uint256 newPrice);
-    event SaveChanges(uint256[2500] price,string[2500] games, bool[2500] notForSale);
+    event RonenBadalov();
 
 
     constructor() ERC721("MetaLand", "MND") {
@@ -26,6 +26,7 @@ contract PurchaseLand is ERC721 {
         price[landId] = pay;
         _mint(msg.sender, landId);
         owners[landId] = msg.sender;
+        games[landId] = "Numble";
         notForSale[landId] = true;
         emit LandBought(msg.sender, landId, owners[landId]);
         return landId;
@@ -38,24 +39,30 @@ contract PurchaseLand is ERC721 {
     function getOwner(uint256 landId) public view returns (address landOwner) {
         return owners[landId];
     }
-    function transferLand(address payable from, address payable to, uint256 landId ) public virtual  returns (uint256) {
+
+    function getLandsData() public view returns(string[2500] memory, bool[2500] memory, uint256[2500] memory) {
+        return (games, notForSale, price);
+    }
+    function transferLand(address from, address to, uint256 landId ) public virtual  returns (uint256) {
         //solhint-disable-next-line max-line-length
-        _transfer(from, to, landId);
-        owners[landId] = to;
-        emit LandTransfer(from ,to ,landId);
+        // _transfer(from, to, landId);
+        // owners[landId] = to;
+        // emit LandTransfer(from ,to ,landId);
+        _mint(msg.sender, landId);
         return landId;
     }
     function setPrice(uint256 landId, uint256 newPrice) public virtual {
-        require(ownerOf(landId) == msg.sender);
+        // require(ownerOf(landId) == msg.sender);
         price[landId] = newPrice;
         emit PriceChanged(landId, newPrice);
     }
 
-    function saveChanged(uint256 landId, uint256 pay, bool status, string memory nameGame) public virtual{
+
+    function saveChanged(uint256 landId, uint256 pay, bool status, string memory nameGame) public {
         // require(owners[landId] == msg.sender);
-        // notForSale[landId] = status;
-        // price[landId] = pay;
-        // games[landId] = nameGame;
-        emit SaveChanges(price, games, notForSale);
+        notForSale[landId] = status;
+        price[landId] = pay;
+        games[landId] = nameGame;
+        emit RonenBadalov();
     }
 }

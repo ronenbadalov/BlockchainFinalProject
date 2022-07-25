@@ -27,7 +27,7 @@ const LandModalInfo = ({
   const [landOwner, setLandOwner] = useState('');
   const [price, setPrice] = useState('');
   const [forSale, setForSale] = useState(true);
-  const [game, setGame] = useState({ name: '' });
+  const [game, setGame] = useState({ name: '', url: '' });
 
   const sxClasses = {
     marginRight: 'auto',
@@ -37,7 +37,8 @@ const LandModalInfo = ({
   useEffect(() => {
     setPrice(landData.price);
     setForSale(landData.forSale);
-    setGame(landData.innerData);
+
+    setGame({ name: landData.game, url: landData.gameUrl });
   }, [landData]);
 
   const formSubmitHandler = async (e) => {
@@ -45,17 +46,24 @@ const LandModalInfo = ({
   };
 
   const buyLandHandler = async () => {
-    const res = await landData.contract.methods
-      .purchase(landData.id, landData.price)
-      .send({
-        from: accounts[0],
-        value: landData.price * 1000000000000000000,
-      });
-    // map[row][col] = {
-    //   ...landData,
-    //   owner: accounts[0],
-    //   isOcupied: true,
-    // };
+    if (
+      `${owners[landData.id]}`.toLowerCase() !==
+      '0x0000000000000000000000000000000000000000'
+    ) {
+      await landData.contract.methods
+        .transferLand(accounts[0], owners[landData.id], landData.id)
+        .send({
+          from: accounts[0],
+          value: landData.price * 1000000000000000000,
+        });
+    } else {
+      await landData.contract.methods
+        .purchase(landData.id, landData.price)
+        .send({
+          from: accounts[0],
+          value: landData.price * 1000000000000000000,
+        });
+    }
 
     refreshMap();
     onClose();
@@ -63,7 +71,10 @@ const LandModalInfo = ({
 
   const isMyLandHandler = async () => {
     const idOfOwnerLand = await contract.methods.getOwner(landData.id).call();
-    if (idOfOwnerLand === accounts[0] && gameMode === 'buyer')
+    if (
+      `${idOfOwnerLand}`.toLowerCase() === `${accounts[0]}`.toLowerCase() &&
+      gameMode === 'buyer'
+    )
       setIsMyLand(true);
     else setIsMyLand(false);
   };
@@ -76,11 +87,15 @@ const LandModalInfo = ({
   // };
 
   const saveChangesHandler = async () => {
-    console.log('in');
-    console.log(landData.id, price, forSale, game?.name);
-    await contract.methods
-      .saveChanged(+landData.id, +price, !forSale, game?.name)
-      .call();
+    await landData.contract.methods
+      .saveChanged(landData.id, +price, !forSale, game?.name)
+      .send({ from: accounts[0] });
+    onClose();
+    // await landData.contract.methods
+    //   .setPrice(landData.id, +price)
+    //   .send({ from: accounts[0] });
+    // const sales = await contract.methods.test().call();
+    // console.log(sales);
     // if (game.name === "Numble")
     //   gameUrl = "https://numble-ronen-badalov.netlify.app/";
     // if (game.name === "TicTacToe")

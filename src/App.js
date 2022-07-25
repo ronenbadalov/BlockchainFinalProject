@@ -8,6 +8,7 @@ import GameMode from './components/GameMode/GameMode';
 import PurchaseLandContract from './PurchaseLand.json';
 import getWeb3 from './getWeb3';
 
+const CONTRACT_ADDR = '0x9949A50Cf9af9C550A2A38617F81160547594C1c';
 function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [gameMode, setGameMode] = useState(null);
@@ -18,7 +19,7 @@ function App() {
     notForSale: [],
   });
   const [blockchainWeb3, setBlockchainWeb3] = useState({});
-
+  console.log(landData);
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -29,11 +30,35 @@ function App() {
       const accounts = await web3.eth.getAccounts();
       const networkId = await web3.eth.net.getId();
       const deployedNetwork = PurchaseLandContract.networks[networkId];
+
       const instance = new web3.eth.Contract(
         PurchaseLandContract.abi,
         deployedNetwork && deployedNetwork.address
       );
+      const instance2 = new web3.eth.Contract(
+        PurchaseLandContract.abi,
+        CONTRACT_ADDR
+      );
 
+      window.ethereum.on('accountsChanged', function (accounts) {
+        (async () => {
+          setIsLoading(true);
+          const {
+            0: games,
+            1: notForSale,
+            2: prices,
+          } = await instance.methods.getLandsData().call();
+          setLandData({ prices, notForSale, games });
+          const ownersOfLands = await instance.methods.getOwners().call();
+          setBlockchainWeb3({
+            web3: web3,
+            contract: instance,
+            owners: ownersOfLands,
+            accounts,
+          });
+          setIsLoading(false);
+        })();
+      });
       const ownersOfLands = await instance.methods.getOwners().call();
       //event receiver
       instance.events.LandBought(
@@ -41,6 +66,14 @@ function App() {
         function (error, results) {
           (async () => {
             const accounts = await web3.eth.getAccounts();
+            setIsLoading(true);
+            const {
+              0: games,
+              1: notForSale,
+              2: prices,
+            } = await instance.methods.getLandsData().call();
+            setLandData({ prices, notForSale, games });
+            setIsLoading(false);
             instance.methods
               .getOwners()
               .call()
@@ -55,22 +88,30 @@ function App() {
           })();
         }
       );
+      // console.log(instance.events.SaveChanges);
 
-      instance.events.SaveChanges(
+      instance.events.RonenBadalov(
         { fromBlock: 'latest' },
         function (error, results) {
-          console.log(results);
+          setIsLoading(true);
+          (async () => {
+            const {
+              0: games,
+              1: notForSale,
+              2: prices,
+            } = await instance.methods.getLandsData().call();
+            setLandData({ prices, notForSale, games });
+            setIsLoading(false);
+          })();
         }
       );
 
-      window.ethereum.on('accountsChanged', function (accounts) {
-        setBlockchainWeb3({
-          web3: web3,
-          contract: instance,
-          owners: ownersOfLands,
-          accounts,
-        });
-      });
+      const {
+        0: games,
+        1: notForSale,
+        2: prices,
+      } = await instance.methods.getLandsData().call();
+      setLandData({ prices, notForSale, games });
 
       setBlockchainWeb3({
         web3,
@@ -78,6 +119,11 @@ function App() {
         contract: instance,
         owners: ownersOfLands,
       });
+
+      const gameModeStorage = localStorage.getItem('gameMode');
+      if (gameModeStorage) setGameMode(gameModeStorage);
+      if (gameModeStorage === 'buyer')
+        setUserName(localStorage.getItem('name'));
     })();
   }, []);
 
@@ -85,11 +131,7 @@ function App() {
     if (blockchainWeb3.accounts && blockchainWeb3.contract) setIsLoading(false);
   }, [blockchainWeb3]);
 
-  useEffect(() => {
-    const gameModeStorage = localStorage.getItem('gameMode');
-    if (gameModeStorage) setGameMode(gameModeStorage);
-    if (gameModeStorage === 'buyer') setUserName(localStorage.getItem('name'));
-  }, []);
+  useEffect(() => {}, []);
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem('gameMode');
@@ -117,6 +159,7 @@ function App() {
               <>
                 <Legend />
                 <Map
+                  landData={landData}
                   gameMode={gameMode}
                   owners={blockchainWeb3.owners}
                   accounts={blockchainWeb3.accounts}
