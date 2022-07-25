@@ -10,9 +10,9 @@ contract PurchaseLand is ERC721 {
     string [2500] public games;
 
     event LandBought(address indexedFrom, uint256 landId, address owner);
-    event LandTransfer(address from, address to, uint landId);
+    event LandTransfer();
     event PriceChanged(uint landId, uint256 newPrice);
-    event RonenBadalov();
+    event saveChangedEvent();
 
 
     constructor() ERC721("MetaLand", "MND") {
@@ -43,17 +43,24 @@ contract PurchaseLand is ERC721 {
     function getLandsData() public view returns(string[2500] memory, bool[2500] memory, uint256[2500] memory) {
         return (games, notForSale, price);
     }
-    function transferLand(address from, address to, uint256 landId ) public virtual  returns (uint256) {
-        //solhint-disable-next-line max-line-length
-        // _transfer(from, to, landId);
-        // owners[landId] = to;
-        // emit LandTransfer(from ,to ,landId);
-        _mint(msg.sender, landId);
-        return landId;
+    // function transferLand(uint256 landId ) public payable returns (uint256) {
+    //     // solhint-disable-next-line max-line-length
+    //     require(msg.value == price[landId]);
+    //     // _transfer(from, to, landId);
+    //     // owners[landId] = to;
+    //     // emit LandTransfer(from ,to ,landId);
+    //     return landId;
+    // }
+    function transferLand(uint256 landId, address payable _to ) public payable {
+       bool sent = _to.send(msg.value);
+       owners[landId] = msg.sender;
+       emit LandTransfer();
+        require(sent, "Failed to send Ether");
     }
     function setPrice(uint256 landId, uint256 newPrice) public virtual {
         // require(ownerOf(landId) == msg.sender);
         price[landId] = newPrice;
+        notForSale[landId] = true;
         emit PriceChanged(landId, newPrice);
     }
 
@@ -63,6 +70,6 @@ contract PurchaseLand is ERC721 {
         notForSale[landId] = status;
         price[landId] = pay;
         games[landId] = nameGame;
-        emit RonenBadalov();
+        emit saveChangedEvent();
     }
 }

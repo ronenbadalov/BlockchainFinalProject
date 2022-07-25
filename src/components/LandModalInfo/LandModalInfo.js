@@ -10,9 +10,9 @@ import {
   RadioGroup,
   Switch,
   TextField,
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import classes from './LandModalInfo.module.scss';
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import classes from "./LandModalInfo.module.scss";
 const LandModalInfo = ({
   landData,
   onClose,
@@ -24,14 +24,14 @@ const LandModalInfo = ({
   handleGameModalOpen,
 }) => {
   const [isMyLand, setIsMyLand] = useState(false);
-  const [landOwner, setLandOwner] = useState('');
-  const [price, setPrice] = useState('');
+  const [landOwner, setLandOwner] = useState("");
+  const [price, setPrice] = useState("");
   const [forSale, setForSale] = useState(true);
-  const [game, setGame] = useState({ name: '', url: '' });
+  const [game, setGame] = useState({ name: "", url: "" });
 
   const sxClasses = {
-    marginRight: 'auto',
-    maxWidth: '200px',
+    marginRight: "auto",
+    maxWidth: "200px",
   };
 
   useEffect(() => {
@@ -48,10 +48,11 @@ const LandModalInfo = ({
   const buyLandHandler = async () => {
     if (
       `${owners[landData.id]}`.toLowerCase() !==
-      '0x0000000000000000000000000000000000000000'
+      "0x0000000000000000000000000000000000000000"
     ) {
       await landData.contract.methods
-        .transferLand(accounts[0], owners[landData.id], landData.id)
+        // .transferLand(accounts[0], owners[landData.id], landData.id)
+        .transferLand(landData.id, owners[landData.id])
         .send({
           from: accounts[0],
           value: landData.price * 1000000000000000000,
@@ -73,7 +74,7 @@ const LandModalInfo = ({
     const idOfOwnerLand = await contract.methods.getOwner(landData.id).call();
     if (
       `${idOfOwnerLand}`.toLowerCase() === `${accounts[0]}`.toLowerCase() &&
-      gameMode === 'buyer'
+      gameMode === "buyer"
     )
       setIsMyLand(true);
     else setIsMyLand(false);
@@ -121,8 +122,8 @@ const LandModalInfo = ({
     <div>
       <h3>Land {landData.id}</h3>
       <form onSubmit={formSubmitHandler}>
-        <div className={classes['formContainer']}>
-          <div className={classes['formSection']}>
+        <div className={classes["formContainer"]}>
+          <div className={classes["formSection"]}>
             <TextField
               id="standard-basic"
               label="Owner"
@@ -130,9 +131,9 @@ const LandModalInfo = ({
               disabled={true}
               value={
                 `${owners[landData.id]}`.toLowerCase() !==
-                '0x0000000000000000000000000000000000000000'
+                "0x0000000000000000000000000000000000000000"
                   ? `${owners[landData.id]}`.toLowerCase()
-                  : 'none'
+                  : "none"
               }
               sx={{ ...sxClasses }}
             />
@@ -152,7 +153,7 @@ const LandModalInfo = ({
               />
             </FormControl>
           </div>
-          <div className={classes['formSection']}>
+          <div className={classes["formSection"]}>
             <FormControlLabel
               control={
                 <Switch
@@ -174,7 +175,7 @@ const LandModalInfo = ({
               <RadioGroup
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
-                value={game?.name ? game?.name : ''}
+                value={game?.name ? game?.name : ""}
                 onChange={(e) => {
                   setGame({ name: e.target.value });
                 }}
@@ -199,7 +200,7 @@ const LandModalInfo = ({
             </FormControl>
           </div>
         </div>
-        <div className={classes['btnSection']}>
+        <div className={classes["btnSection"]}>
           <Button
             variant="contained"
             disabled={!game?.url}
@@ -210,7 +211,7 @@ const LandModalInfo = ({
           {!isMyLand && (
             <Button
               variant="contained"
-              disabled={gameMode === 'guest' || !landData.forSale}
+              disabled={gameMode === "guest" || !landData.forSale}
               type="submit"
               onClick={buyLandHandler}
             >

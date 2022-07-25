@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Land from './Land';
-import classes from './Map.module.scss';
-import { Row, Col } from 'react-bootstrap';
-import MUIModal from '../Modal/MUIModal';
-import LandModalInfo from '../LandModalInfo/LandModalInfo.js';
-import mapDataJson from '../../mapData.json';
-import GameModal from '../GameModal/GameModal';
+import React, { useCallback, useEffect, useState } from "react";
+import Land from "./Land";
+import classes from "./Map.module.scss";
+import { Row, Col } from "react-bootstrap";
+import MUIModal from "../Modal/MUIModal";
+import LandModalInfo from "../LandModalInfo/LandModalInfo.js";
+import mapDataJson from "../../mapData.json";
+import GameModal from "../GameModal/GameModal";
+import { Badge } from "@mui/material";
 // const getMap = async () => {
 //   try {
 //     const res = await fetch("http://127.0.0.1:5000/land/getAll");
@@ -48,10 +49,10 @@ const Map = ({ contract, accounts, owners, gameMode, landData }) => {
   console.log(landData.prices[153]);
   const MapComp = useCallback(() => {
     return (
-      <div className={classes['container']} style={{ margin: '30px' }}>
+      <div className={classes["container"]} style={{ margin: "30px" }}>
         {mapData.map((row, i) => {
           return (
-            <Row className={classes['row']} key={i} xs={'auto'}>
+            <Row className={classes["row"]} key={i} xs={"auto"}>
               {row.map((land) => {
                 return (
                   <Col key={land.id} className="p-0 m-0">
@@ -63,7 +64,7 @@ const Map = ({ contract, accounts, owners, gameMode, landData }) => {
                       id={land.id}
                       type={land.type}
                       price={
-                        landData.prices[land.id] === '0'
+                        landData.prices[land.id] === "0"
                           ? land.price
                           : landData.prices[land.id]
                       }
@@ -91,7 +92,7 @@ const Map = ({ contract, accounts, owners, gameMode, landData }) => {
       <MUIModal
         open={showModal}
         onClose={handleModalClose}
-        sx={{ maxWidth: '40%' }}
+        sx={{ maxWidth: "40%" }}
       >
         <LandModalInfo
           gameMode={gameMode}
@@ -107,7 +108,7 @@ const Map = ({ contract, accounts, owners, gameMode, landData }) => {
       <MUIModal
         open={showGameModal}
         onClose={handleGameModalClose}
-        sx={{ maxWidth: '100%', margin: '20px' }}
+        sx={{ maxWidth: "100%", margin: "20px" }}
       >
         <GameModal landData={landModalData} />
       </MUIModal>

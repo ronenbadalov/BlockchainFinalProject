@@ -10,7 +10,7 @@ const Loader = () => {
         loop={true}
         style={{ width: "300px" }}
       />
-      <h3>Please connect your MetaMask wallet</h3>
+      <h3>Please wait</h3>
     </div>
   );
 };

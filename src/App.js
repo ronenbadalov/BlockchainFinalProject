@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Legend from './components/Legend/Legend';
-import Loader from './components/Loader/Loader';
-import Map from './components/UI/Map';
-import Nav from './components/layout/Nav.js';
-import './App.scss';
-import GameMode from './components/GameMode/GameMode';
-import PurchaseLandContract from './PurchaseLand.json';
-import getWeb3 from './getWeb3';
+import React, { useCallback, useEffect, useState } from "react";
+import Legend from "./components/Legend/Legend";
+import Loader from "./components/Loader/Loader";
+import Map from "./components/UI/Map";
+import Nav from "./components/layout/Nav.js";
+import "./App.scss";
+import GameMode from "./components/GameMode/GameMode";
+import PurchaseLandContract from "./PurchaseLand.json";
+import getWeb3 from "./getWeb3";
 
-const CONTRACT_ADDR = '0x9949A50Cf9af9C550A2A38617F81160547594C1c';
+const CONTRACT_ADDR = "0x9949A50Cf9af9C550A2A38617F81160547594C1c";
 function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [gameMode, setGameMode] = useState(null);
@@ -40,7 +40,7 @@ function App() {
         CONTRACT_ADDR
       );
 
-      window.ethereum.on('accountsChanged', function (accounts) {
+      window.ethereum.on("accountsChanged", function (accounts) {
         (async () => {
           setIsLoading(true);
           const {
@@ -60,9 +60,10 @@ function App() {
         })();
       });
       const ownersOfLands = await instance.methods.getOwners().call();
+      console.log(ownersOfLands);
       //event receiver
       instance.events.LandBought(
-        { fromBlock: 'latest' },
+        { fromBlock: "latest" },
         function (error, results) {
           (async () => {
             const accounts = await web3.eth.getAccounts();
@@ -73,7 +74,6 @@ function App() {
               2: prices,
             } = await instance.methods.getLandsData().call();
             setLandData({ prices, notForSale, games });
-            setIsLoading(false);
             instance.methods
               .getOwners()
               .call()
@@ -85,13 +85,14 @@ function App() {
                   accounts,
                 });
               });
+            setIsLoading(false);
           })();
         }
       );
       // console.log(instance.events.SaveChanges);
 
-      instance.events.RonenBadalov(
-        { fromBlock: 'latest' },
+      instance.events.saveChangedEvent(
+        { fromBlock: "latest" },
         function (error, results) {
           setIsLoading(true);
           (async () => {
@@ -101,6 +102,30 @@ function App() {
               2: prices,
             } = await instance.methods.getLandsData().call();
             setLandData({ prices, notForSale, games });
+            setIsLoading(false);
+          })();
+        }
+      );
+
+      instance.events.LandTransfer(
+        { fromBlock: "latest" },
+        function (error, results) {
+          setIsLoading(true);
+          (async () => {
+            const {
+              0: games,
+              1: notForSale,
+              2: prices,
+            } = await instance.methods.getLandsData().call();
+
+            setLandData({ prices, notForSale, games });
+            const ownersOfLands = await instance.methods.getOwners().call();
+            setBlockchainWeb3({
+              web3: web3,
+              contract: instance,
+              owners: ownersOfLands,
+              accounts,
+            });
             setIsLoading(false);
           })();
         }
@@ -120,32 +145,33 @@ function App() {
         owners: ownersOfLands,
       });
 
-      const gameModeStorage = localStorage.getItem('gameMode');
+      const gameModeStorage = localStorage.getItem("gameMode");
       if (gameModeStorage) setGameMode(gameModeStorage);
-      if (gameModeStorage === 'buyer')
-        setUserName(localStorage.getItem('name'));
+      if (gameModeStorage === "buyer")
+        setUserName(localStorage.getItem("name"));
     })();
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
+
     if (blockchainWeb3.accounts && blockchainWeb3.contract) setIsLoading(false);
   }, [blockchainWeb3]);
 
-  useEffect(() => {}, []);
-
   const handleLogout = useCallback(() => {
-    localStorage.removeItem('gameMode');
-    localStorage.removeItem('name');
+    localStorage.removeItem("gameMode");
+    localStorage.removeItem("name");
     setGameMode(null);
     setUserName(null);
   }, []);
 
   return (
     <>
-      {!gameMode && (
+      {isLoading && <Loader />}
+      {!gameMode && !isLoading && (
         <GameMode setGameMode={setGameMode} setUserName={setUserName} />
       )}
-      {gameMode && (
+      {gameMode && !isLoading && (
         <div className="App">
           <Nav
             gameMode={gameMode}
