@@ -24,7 +24,6 @@ const LandModalInfo = ({
   handleGameModalOpen,
 }) => {
   const [isMyLand, setIsMyLand] = useState(false);
-  const [landOwner, setLandOwner] = useState("");
   const [price, setPrice] = useState("");
   const [forSale, setForSale] = useState(true);
   const [game, setGame] = useState({ name: "", url: "" });
@@ -46,12 +45,12 @@ const LandModalInfo = ({
   };
 
   const buyLandHandler = async () => {
+    console.log(owners[landData.id], accounts[0]);
     if (
       `${owners[landData.id]}`.toLowerCase() !==
       "0x0000000000000000000000000000000000000000"
     ) {
       await landData.contract.methods
-        // .transferLand(accounts[0], owners[landData.id], landData.id)
         .transferLand(landData.id, owners[landData.id])
         .send({
           from: accounts[0],
@@ -80,36 +79,11 @@ const LandModalInfo = ({
     else setIsMyLand(false);
   };
 
-  // const isCurrentLandTaken = async () => {
-  //   const owner = await landData.contract.methods.getOwner(landData.id).call();
-  //   console.log(owner);
-  //   if (owner === 0) return false;
-  //   return true;
-  // };
-
   const saveChangesHandler = async () => {
     await landData.contract.methods
       .saveChanged(landData.id, +price, !forSale, game?.name)
       .send({ from: accounts[0] });
     onClose();
-    // await landData.contract.methods
-    //   .setPrice(landData.id, +price)
-    //   .send({ from: accounts[0] });
-    // const sales = await contract.methods.test().call();
-    // console.log(sales);
-    // if (game.name === "Numble")
-    //   gameUrl = "https://numble-ronen-badalov.netlify.app/";
-    // if (game.name === "TicTacToe")
-    //   gameUrl = "https://toytheater.com/tic-tac-toe/";
-    // if (game.name === "Flappy Bird") gameUrl = "https://flappybird.io/";
-
-    // map[row][col] = {
-    //   ...landData,
-    //   price,
-    //   forSale,
-    //   innerData: { name: game.name, url: gameUrl },
-    // };
-    // onClose();
   };
 
   useEffect(() => {

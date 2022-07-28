@@ -19,7 +19,6 @@ function App() {
     notForSale: [],
   });
   const [blockchainWeb3, setBlockchainWeb3] = useState({});
-  console.log(landData);
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -60,13 +59,13 @@ function App() {
         })();
       });
       const ownersOfLands = await instance.methods.getOwners().call();
-      console.log(ownersOfLands);
       //event receiver
       instance.events.LandBought(
         { fromBlock: "latest" },
         function (error, results) {
           (async () => {
             const accounts = await web3.eth.getAccounts();
+            console.log(accounts);
             setIsLoading(true);
             const {
               0: games,
@@ -89,7 +88,6 @@ function App() {
           })();
         }
       );
-      // console.log(instance.events.SaveChanges);
 
       instance.events.saveChangedEvent(
         { fromBlock: "latest" },
@@ -112,6 +110,7 @@ function App() {
         function (error, results) {
           setIsLoading(true);
           (async () => {
+            const accounts = await web3.eth.getAccounts();
             const {
               0: games,
               1: notForSale,

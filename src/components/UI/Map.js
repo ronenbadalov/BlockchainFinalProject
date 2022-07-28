@@ -7,16 +7,6 @@ import LandModalInfo from "../LandModalInfo/LandModalInfo.js";
 import mapDataJson from "../../mapData.json";
 import GameModal from "../GameModal/GameModal";
 import { Badge } from "@mui/material";
-// const getMap = async () => {
-//   try {
-//     const res = await fetch("http://127.0.0.1:5000/land/getAll");
-//     if (!res.ok) throw new Error("error while fetching map");
-//     const data = await res.json();
-//     return data;
-//   } catch (e) {
-//     console.error(e.message);
-//   }
-// };
 
 const Map = ({ contract, accounts, owners, gameMode, landData }) => {
   const [mapData, setMapData] = useState([]);
@@ -46,7 +36,6 @@ const Map = ({ contract, accounts, owners, gameMode, landData }) => {
   useEffect(() => {
     refreshMap();
   }, []);
-  console.log(landData.prices[153]);
   const MapComp = useCallback(() => {
     return (
       <div className={classes["container"]} style={{ margin: "30px" }}>

@@ -6,7 +6,6 @@ import { Badge, Chip } from "@mui/material";
 
 const Land = (props) => {
   const [classColor, setClassColor] = useState("");
-  if (props.id === 153) console.log(props.forSale);
   useEffect(() => {
     const ownerOfThisLand = `${props.owners[props.id]}`.toLowerCase();
     const thisAcc = `${props.accounts[0]}`.toLowerCase();

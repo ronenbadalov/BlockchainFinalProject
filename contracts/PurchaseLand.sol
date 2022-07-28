@@ -43,14 +43,6 @@ contract PurchaseLand is ERC721 {
     function getLandsData() public view returns(string[2500] memory, bool[2500] memory, uint256[2500] memory) {
         return (games, notForSale, price);
     }
-    // function transferLand(uint256 landId ) public payable returns (uint256) {
-    //     // solhint-disable-next-line max-line-length
-    //     require(msg.value == price[landId]);
-    //     // _transfer(from, to, landId);
-    //     // owners[landId] = to;
-    //     // emit LandTransfer(from ,to ,landId);
-    //     return landId;
-    // }
     function transferLand(uint256 landId, address payable _to ) public payable {
        bool sent = _to.send(msg.value);
        owners[landId] = msg.sender;
